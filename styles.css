@@ -1,0 +1,104 @@
+
+* {
+	--search-text: #dfdfdf;
+	--search-border: #4e4e4e;
+	--search-bg: #22222280;
+	--search-icon: #222222a0;
+	--search-icon-selected: #222222f0;
+
+	--title-text: #efefef;
+
+	font-family: Courier;
+	color: var(--search-text);
+}
+
+body {
+	background: black;
+	background-image: url("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp7857822.jpg&f=1&nofb=1&ipt=f090e751237389029bacb57ad3f5163ba65f6d335fe90260abaa614aaebb4877&ipo=images");
+	background-size: cover;
+	display: flex;
+	overflow: hidden;
+	overflow-y: hidden;
+}
+
+.centered {
+	margin: auto;
+	align-self: center;
+}
+
+.center-horizontal {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.items-centered-vertically {
+	align-items: center;
+}
+
+.content-center-vertical {
+	align-content: center;
+}
+
+.row {
+	display: flex;
+	flex-direction: row;
+}
+
+.page {
+	display: inherit;
+	flex: 1;
+	flex-direction: column;
+	width: 100vw;
+	height: 99vh;
+}
+
+.title {
+	font-size: 4rem;
+	user-select: none;
+	color: var(--title-text);
+	text-shadow: 0 0 8px var(--search-bg);
+}
+
+.searchbar-wrap {
+	display: inherit;
+	flex-direction: column;
+	width: 60vw;
+}
+
+.searchbar {
+	width: 100%;
+	padding: 0.6rem;
+	border: none;
+	border-radius: 4px;
+	color: var(--search-text);
+	background-color: var(--search-bg);
+	border: 1px solid var(--search-border);
+	border-right: none;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+input.searchbar {
+	outline: none;
+}
+
+.glass {
+	/* position: relative; */
+	/* right: 32px; */
+	z-index: 99;
+	height: 2rem;
+	padding-top: 0.1rem;
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
+
+	background-color: var(--search-icon);
+	border-radius: 4px;
+	border: 1px solid transparent;
+	border-left: none;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.glass:hover {
+	cursor: pointer;
+	background-color: var(--search-icon-selected);
+}
