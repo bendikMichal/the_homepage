@@ -53,7 +53,24 @@ body {
 }
 
 .title {
+	margin: 0;
+	padding: 0;
 	font-size: 4rem;
+	user-select: none;
+	color: var(--title-text);
+	text-shadow: 0 0 8px var(--search-bg);
+
+	transform-origin: 0 0;
+	transform: rotate(90deg);
+	position: absolute;
+	top: 0px;
+	left: 4rem;
+
+	z-index: 100;
+}
+
+.clock {
+	font-size: 3rem;
 	user-select: none;
 	color: var(--title-text);
 	text-shadow: 0 0 8px var(--search-bg);
@@ -85,7 +102,7 @@ input.searchbar {
 	/* position: relative; */
 	/* right: 32px; */
 	z-index: 99;
-	height: 2rem;
+	height: 2.05rem;
 	padding-top: 0.1rem;
 	padding-left: 0.5rem;
 	padding-right: 0.5rem;
