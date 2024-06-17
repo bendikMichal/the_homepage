@@ -1,0 +1,18 @@
+{
+	"name": "THE homepage",
+	"version": "1.0",
+	"manifest_version": 2,
+	"applications": {
+		"gecko": {
+			"id": "the_homepage@bendikMichal",
+			"strict_min_version": "54.0"
+		}
+	},
+	"chrome_settings_overrides": {
+		"homepage": "index.html"
+	},
+	"chrome_url_overrides": {
+		"newtab": "index.html"
+	},
+	"permissions": ["storage", "activeTab"]
+}
