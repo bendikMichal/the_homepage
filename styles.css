@@ -15,7 +15,10 @@
 body {
 	background: black;
 	/* https://picsum.photos/1024 */
-	background-image: url("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp7857822.jpg&f=1&nofb=1&ipt=f090e751237389029bacb57ad3f5163ba65f6d335fe90260abaa614aaebb4877&ipo=images");
+	/* https://fastly.picsum.photos/id/649/1024/1024.jpg?hmac=GN0NIR2VXWb5OTdAvsoGZyA-KBxZ-I0McDumyA4671M */
+	/* https://fastly.picsum.photos/id/555/2048/2048.jpg?hmac=DijiNTFJhVeA2St8T_BlviZ7XyJzbrdlj5Q5LhVMJcc */
+	background-image: url("https://picsum.photos/2048");
+	/* background-image: url("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp7857822.jpg&f=1&nofb=1&ipt=f090e751237389029bacb57ad3f5163ba65f6d335fe90260abaa614aaebb4877&ipo=images"); */
 	background-size: cover;
 	display: flex;
 	overflow: hidden;

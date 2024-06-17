@@ -21,6 +21,7 @@ searchbar.addEventListener('keydown', event => {
 });
 search_button.onclick = find;
 
+document.body.style.backgroundImage = "url(\"https://picsum.photos/2048\")" 
 const formatter = new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit' });
 set_clock();
 let clock_interval = setInterval(set_clock, clock_update_seconds * 1000);

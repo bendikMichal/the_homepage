@@ -23,7 +23,7 @@ web-ext sign --api-key="key" --api-secret="secret"
 ```
 - go to `web-ext-artifacts` and locate the `.xpi`
 
-## Without signing
+## Without signing (requires firefox nightly)
 - zip the contents
 - rename the `.zip` to `.xpi`
 - in `about:config` set `xpinstall.signatures.required` to `false`
