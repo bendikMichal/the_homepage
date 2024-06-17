@@ -14,6 +14,7 @@
 
 body {
 	background: black;
+	/* https://picsum.photos/1024 */
 	background-image: url("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp7857822.jpg&f=1&nofb=1&ipt=f090e751237389029bacb57ad3f5163ba65f6d335fe90260abaa614aaebb4877&ipo=images");
 	background-size: cover;
 	display: flex;
