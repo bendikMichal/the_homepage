@@ -113,7 +113,6 @@ input.searchbar {
 	color: var(--search-text);
 	background-color: var(--search-bg);
 	border: 1px solid var(--search-border);
-	border-right: none;
 	align-self: center;
 }
 input.settings-input {
@@ -214,4 +213,11 @@ input.settings-input {
 
 .title-sep {
 	width: 80%;
+}
+
+.icon-button {
+	width: min-content;
+}
+.icon-button>svg:hover {
+	fill: #fff;
 }
