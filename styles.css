@@ -6,6 +6,9 @@
 	--search-icon: #222222a0;
 	--search-icon-selected: #222222f0;
 
+	--settings-bg: #0f0f0f85;
+	--settings-sidebar-bg: #0f0f0fef;
+
 	--title-text: #efefef;
 
 	font-family: Courier;
@@ -97,16 +100,36 @@ body {
 	border-right: none;
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
+	backdrop-filter: blur(2px);
 }
 input.searchbar {
 	outline: none;
+}
+
+.settings-input {
+	padding: 0.2rem;
+	border: none;
+	border-radius: 4px;
+	color: var(--search-text);
+	background-color: var(--search-bg);
+	border: 1px solid var(--search-border);
+	border-right: none;
+	align-self: center;
+}
+input.settings-input {
+	outline: none;
+}
+.settings-row {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
 }
 
 .glass {
 	/* position: relative; */
 	/* right: 32px; */
 	z-index: 99;
-	height: 2.05rem;
+	height: calc(2.05rem - 0.5px);
 	padding-top: 0.1rem;
 	padding-left: 0.5rem;
 	padding-right: 0.5rem;
@@ -117,9 +140,78 @@ input.searchbar {
 	border-left: none;
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
+	backdrop-filter: blur(2px);
 }
 
 .glass:hover {
 	cursor: pointer;
 	background-color: var(--search-icon-selected);
+}
+
+.credits {
+	position: absolute;
+	bottom: 2px;
+	right: 2px;
+
+	text-shadow: 0 0 2px var(--search-bg);
+	z-index: 100;
+}
+
+.settings {
+	cursor: pointer;
+	position: absolute;
+	top: 2px;
+	right: 2px;
+
+	z-index: 100;
+}
+
+.settings>svg {
+	filter: drop-shadow(0 0 2px var(--search-bg));
+	fill: var(--title-text);
+}
+
+.settings>svg:hover {
+	fill: #fff;
+}
+
+.settings-menu {
+	display: none;
+	flex-direction: row;
+	background-color: var(--settings-bg);
+	backdrop-filter: blur(6px);
+	width: 600px;
+	height: 360px;
+	overflow: hidden;
+
+	position: absolute;
+	top: 4px;
+	right: 30px;
+
+	border-radius: 8px;
+	border-top-right-radius: 0px;
+	box-shadow: 0 0 4px var(--search-bg);
+	z-index: 110;
+}
+
+.settings-sidebar {
+	display: flex;
+	background-color: var(--settings-bg);
+	width: 15%;
+	min-height: 100%;
+}
+
+.settings-content {
+	padding: 8px;
+	padding-left: 35px;
+	padding-right: 35px;
+	display: flex;
+	flex-direction: column;
+	width: 100%; /* 100% - sidebar */
+	height: 95%;
+	overflow-y: scroll;
+}
+
+.title-sep {
+	width: 80%;
 }
