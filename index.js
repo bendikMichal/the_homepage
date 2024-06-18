@@ -41,7 +41,10 @@ const open_settings = () => {
 	settings_open = !settings_open;
 	settings_menu.style.display = settings_open ? "flex" : "none";
 }
-const close_settings = () => settings_open = true && open_settings();
+const close_settings = () => {
+	settings_open = false;
+	settings_menu.style.display = settings_open ? "flex" : "none";
+}
 
 
 // sync load
@@ -83,6 +86,9 @@ settings_button.onclick = open_settings;
 
 document.body.style.backgroundImage = `url("${image_url}")`
 settings_menu.onblur = close_settings;
+document.addEventListener('click', event => {
+  if (!settings_menu.contains(event.target) && !settings_button.contains(event.target)) close_settings();
+});
 
 const formatter = new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit' });
 set_clock();
