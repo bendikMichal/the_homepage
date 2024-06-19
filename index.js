@@ -37,13 +37,15 @@ const set_clock = () => {
 }
 
 let settings_open = false;
-const open_settings = () => {
+const toggle_settings = () => {
 	settings_open = !settings_open;
-	settings_menu.style.display = settings_open ? "flex" : "none";
+	// settings_menu.style.display = settings_open ? "flex" : "none";
+	settings_menu.style.height = settings_open ? "360px" : "0px";
 }
 const close_settings = () => {
 	settings_open = false;
-	settings_menu.style.display = settings_open ? "flex" : "none";
+	// settings_menu.style.display = settings_open ? "flex" : "none";
+	settings_menu.style.height = settings_open ? "360px" : "0px";
 }
 
 
@@ -52,7 +54,9 @@ const close_settings = () => {
 // default settings
 let clock_update_seconds = 10;
 let image_url = "https://picsum.photos/2048";
+
 const CLOCK_INTERVAL = "CLOCK_INTERVAL";
+const IMAGE_URL = "IMAGE_URL";
 
 // setting-up elements
 let searchbar = document.getElementsByClassName("searchbar")[0];
@@ -71,20 +75,34 @@ clock_interval_input.addEventListener('input', () => {
 		let num = Number(val);
 		if (num < 1) num = 1;
 		if (num > 60) num = 60;
+
 		settings_data[CLOCK_INTERVAL] = num;
-		save_data("settings", settings_data);
 		clock_update_seconds = num;
+		save_data("settings", settings_data);
+
 		if (clock_interval) clearInterval(clock_interval);
 		clock_interval = setInterval(set_clock, clock_update_seconds * 1000);
 		console.log("New clock update interval:", clock_update_seconds, settings_data);
 	}
 });
 
+
+let image_url_input = document.getElementById("image-url");
+image_url_input.addEventListener('input', () => {
+
+	settings_data[IMAGE_URL] = image_url_input.value;
+	image_url = image_url_input.value;
+	save_data("settings", settings_data);
+
+	document.body.style.backgroundImage = `url("${image_url}")`
+	console.log("New image url: ", image_url, settings_data);
+})
+
+
 let settings_menu = document.getElementsByClassName("settings-menu")[0];
 let settings_button = document.getElementsByClassName("settings")[0];
-settings_button.onclick = open_settings;
+settings_button.onclick = toggle_settings;
 
-document.body.style.backgroundImage = `url("${image_url}")`
 settings_menu.onblur = close_settings;
 document.addEventListener('click', event => {
   if (!settings_menu.contains(event.target) && !settings_button.contains(event.target)) close_settings();
@@ -101,8 +119,15 @@ const init = async () => {
 	const manifest = await require_file("manifest.json");
 	settings_data = await load_data("settings");
 	console.log(settings_data);
+
+	// setting settings
 	clock_update_seconds = settings_data[CLOCK_INTERVAL] ?? clock_update_seconds;
 	clock_interval_input.value = `${clock_update_seconds}`;
+
+	image_url = settings_data[IMAGE_URL] ?? image_url;
+	image_url_input.value = image_url;
+	document.body.style.backgroundImage = `url("${image_url}")`
+
 
 	let version_field = document.getElementById("version");
 	version_field.textContent = manifest["version"];

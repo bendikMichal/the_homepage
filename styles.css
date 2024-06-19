@@ -175,12 +175,12 @@ input.settings-input {
 }
 
 .settings-menu {
-	display: none;
+	display: flex;
 	flex-direction: row;
 	background-color: var(--settings-bg);
 	backdrop-filter: blur(6px);
 	width: 600px;
-	height: 360px;
+	height: 0px;
 	overflow: hidden;
 
 	position: absolute;
@@ -191,6 +191,11 @@ input.settings-input {
 	border-top-right-radius: 0px;
 	box-shadow: 0 0 4px var(--search-bg);
 	z-index: 110;
+
+	transition-timing-function: ease-in;
+	transition: 0.3s;
+
+	/* height: 360px; */
 }
 
 .settings-sidebar {
