@@ -62,11 +62,12 @@ const set_bg_image = async (url) => {
 	}
 	href.href = url;
 
-	document.body.style.backgroundImage = `url("${url}")`;
+	// document.body.style.backgroundImage = `url("${url}")`;
+	document.body.style["background-image"] = `url("${url}")`;
 }
 
 const disable_bg_image = () => {
-	document.body.style.backgroundImage = ``;
+	document.body.style["background-image"] = ``;
 }
 
 const get_color_picker_by_name = (name) => {
@@ -81,9 +82,9 @@ const get_color_picker_preview_by_name = (name) => {
 	return all.filter(item => item.getAttribute("name") === name)[0];
 }
 
+const valid_hex = /^#([0-9A-F]{3}){1,2}$/i;
 const update_picker_preview = (name) => {
 	let picker = get_color_picker_by_name(name);
-	const valid_hex = /^#([0-9A-F]{3}){1,2}$/i;
 	if (!valid_hex.test(picker.value)) return;
 
 	let prew = get_color_picker_preview_by_name(name);
@@ -97,9 +98,9 @@ const handle_color_pickers = () => {
 		let name = picker.getAttribute("name");
 		update_picker_preview(name);
 		picker.oninput = () => update_picker_preview(name);
+		picker.onchange = () => update_picker_preview(name);
 	}
 }
-handle_color_pickers();
 
 
 // sync load
@@ -108,10 +109,12 @@ handle_color_pickers();
 let clock_update_seconds = 10;
 let image_url = "https://picsum.photos/2048";
 let use_single_color = false;
+let bg_color = "#000";
 
 const CLOCK_INTERVAL = "CLOCK_INTERVAL";
 const IMAGE_URL = "IMAGE_URL";
 const USE_SINGLE_COLOR = "USE_SINGLE_COLOR";
+const BG_COLOR = "BG_COLOR";
 
 const CHECKBOX_CHECKED = "https://img.icons8.com/ios-glyphs/30/checked-checkbox.png";
 const CHECKBOX_UNCHECKED = "https://img.icons8.com/fluency-systems-regular/48/unchecked-checkbox.png";
@@ -168,6 +171,19 @@ single_color_checkbox.onchange = () => {
 	save_data("settings", settings_data);
 }
 
+let colorpicker_input = document.getElementById("bg-colorpicker");
+colorpicker_input.addEventListener('input', () => {
+
+	if (!valid_hex.test(colorpicker_input.value)) return;
+
+	settings_data[BG_COLOR] = colorpicker_input.value;
+	bg_color = colorpicker_input.value;
+	document.body.style["background-color"] = bg_color;
+	save_data("settings", settings_data);
+
+	console.log("New bg color: ", bg_color, settings_data);
+});
+
 
 let settings_menu = document.getElementsByClassName("settings-menu")[0];
 let settings_button = document.getElementsByClassName("settings")[0];
@@ -201,7 +217,13 @@ const init = async () => {
 	use_single_color = settings_data[USE_SINGLE_COLOR] ?? use_single_color;
 	single_color_checkbox.value = use_single_color;
 
+	bg_color = settings_data[BG_COLOR] ?? bg_color;
+	colorpicker_input.value = bg_color;
+	document.body.style["background-color"] = bg_color;
+	handle_color_pickers();
 
+
+	// setting version from manifest
 	let version_field = document.getElementById("version");
 	version_field.textContent = manifest["version"];
 
