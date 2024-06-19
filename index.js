@@ -69,6 +69,38 @@ const disable_bg_image = () => {
 	document.body.style.backgroundImage = ``;
 }
 
+const get_color_picker_by_name = (name) => {
+	let all = document.getElementsByClassName("colorpicker-input");
+	all = Array.from(all);
+	return all.filter(item => item.getAttribute("name") === name)[0];
+}
+
+const get_color_picker_preview_by_name = (name) => {
+	let all = document.getElementsByClassName("colorpicker-preview");
+	all = Array.from(all);
+	return all.filter(item => item.getAttribute("name") === name)[0];
+}
+
+const update_picker_preview = (name) => {
+	let picker = get_color_picker_by_name(name);
+	const valid_hex = /^#([0-9A-F]{3}){1,2}$/i;
+	if (!valid_hex.test(picker.value)) return;
+
+	let prew = get_color_picker_preview_by_name(name);
+	prew.style["background-color"] = picker.value;
+	prew.style["box-shadow"] = `0 0 4px ${picker.value}`;
+}
+
+const handle_color_pickers = () => {
+	let cps = document.getElementsByClassName("colorpicker-input");
+	for (let picker of cps) {
+		let name = picker.getAttribute("name");
+		update_picker_preview(name);
+		picker.oninput = () => update_picker_preview(name);
+	}
+}
+handle_color_pickers();
+
 
 // sync load
 

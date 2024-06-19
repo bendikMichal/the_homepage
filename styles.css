@@ -297,3 +297,24 @@ input[type=checkbox]:hover + img {
 	/* #fff */
 	filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(28%) hue-rotate(115deg) brightness(107%) contrast(107%);
 }
+
+.pad {
+	margin-top: 32px;
+}
+
+.colorpicker-wrapper {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.colorpicker-preview {
+	width: 18px;
+	height: 18px;
+	background-color: red;
+	border-radius: 9px;
+	margin-right: 8px;
+	box-shadow: 0 0 4px red;
+}
+
+
