@@ -48,15 +48,36 @@ const close_settings = () => {
 	settings_menu.style.height = settings_open ? "360px" : "0px";
 }
 
+const set_bg_image = async (url) => {
+	let res = null;
+	try {
+		res = await fetch(url);
+	} catch {
+
+	}
+
+	let href = document.getElementById("image-url-download");
+	if (res && res.url) {
+		url = res.url;
+	}
+	href.href = url;
+
+	document.body.style.backgroundImage = `url("${url}")`;
+}
+
 
 // sync load
 
 // default settings
 let clock_update_seconds = 10;
 let image_url = "https://picsum.photos/2048";
+let random_image_url = true;
 
 const CLOCK_INTERVAL = "CLOCK_INTERVAL";
 const IMAGE_URL = "IMAGE_URL";
+
+const CHECKBOX_CHECKED = "https://img.icons8.com/ios-glyphs/30/checked-checkbox.png";
+const CHECKBOX_UNCHECKED = "https://img.icons8.com/fluency-systems-regular/48/unchecked-checkbox.png";
 
 // setting-up elements
 let searchbar = document.getElementsByClassName("searchbar")[0];
@@ -94,7 +115,7 @@ image_url_input.addEventListener('input', () => {
 	image_url = image_url_input.value;
 	save_data("settings", settings_data);
 
-	document.body.style.backgroundImage = `url("${image_url}")`
+	set_bg_image(image_url);
 	console.log("New image url: ", image_url, settings_data);
 })
 
@@ -126,7 +147,7 @@ const init = async () => {
 
 	image_url = settings_data[IMAGE_URL] ?? image_url;
 	image_url_input.value = image_url;
-	document.body.style.backgroundImage = `url("${image_url}")`
+	set_bg_image(image_url);
 
 
 	let version_field = document.getElementById("version");

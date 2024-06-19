@@ -11,6 +11,7 @@
 
 	--title-text: #efefef;
 
+
 	font-family: Courier;
 	color: var(--search-text);
 }
@@ -20,7 +21,7 @@ body {
 	/* https://picsum.photos/1024 */
 	/* https://fastly.picsum.photos/id/649/1024/1024.jpg?hmac=GN0NIR2VXWb5OTdAvsoGZyA-KBxZ-I0McDumyA4671M */
 	/* https://fastly.picsum.photos/id/555/2048/2048.jpg?hmac=DijiNTFJhVeA2St8T_BlviZ7XyJzbrdlj5Q5LhVMJcc */
-	background-image: url("https://picsum.photos/2048");
+	/* background-image: url("https://picsum.photos/2048"); */
 	/* background-image: url("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp7857822.jpg&f=1&nofb=1&ipt=f090e751237389029bacb57ad3f5163ba65f6d335fe90260abaa614aaebb4877&ipo=images"); */
 	background-size: cover;
 	display: flex;
@@ -36,6 +37,10 @@ body {
 .center-horizontal {
 	margin-left: auto;
 	margin-right: auto;
+}
+
+.center-vertical {
+	align-self: center;
 }
 
 .items-centered-vertically {
@@ -223,6 +228,70 @@ input.settings-input {
 .icon-button {
 	width: min-content;
 }
+.icon-button:hover {
+	cursor: pointer;
+}
 .icon-button>svg:hover {
 	fill: #fff;
+}
+img.icon-button {
+	/* --search-text */
+	filter: brightness(0) saturate(100%) invert(87%) sepia(0%) saturate(0%) hue-rotate(58deg) brightness(99%) contrast(102%);
+}
+
+img:hover.icon-button {
+	/* #fff */
+	filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(28%) hue-rotate(115deg) brightness(107%) contrast(107%);
+}
+
+}
+
+.inverted-colors {
+	filter: invert(90%);
+}
+
+.inverted-colors:hover {
+	filter: invert(100%);
+}
+
+.footer {
+	align-self: end;
+	margin-top: auto;
+}
+
+.checkbox-wrapper {
+	position: relative;
+	width: 24px;
+	height: 24px;
+}
+
+input[type=checkbox] {
+	margin: 0;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+
+	opacity: 0;
+	z-index: 200;
+	cursor: pointer;
+}
+input[type=checkbox] + img {
+	position: absolute;
+	width: 24px;
+	height: 24px;
+	top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+	
+	content:url("https://img.icons8.com/fluency-systems-regular/48/unchecked-checkbox.png");
+}
+input[type=checkbox]:checked + img {
+	content:url("https://img.icons8.com/fluency-systems-regular/30/checked-checkbox.png");
+}
+
+input[type=checkbox]:hover + img {
+	/* #fff */
+	filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(28%) hue-rotate(115deg) brightness(107%) contrast(107%);
 }
