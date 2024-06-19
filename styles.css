@@ -285,10 +285,12 @@ input[type=checkbox] + img {
     left: 50%;
     transform: translate(-50%, -50%);
 	
-	content:url("https://img.icons8.com/fluency-systems-regular/48/unchecked-checkbox.png");
+	/* content:url("https://img.icons8.com/fluency-systems-regular/48/unchecked-checkbox.png"); */
+	content:url("./unchecked-checkbox.png");
 }
 input[type=checkbox]:checked + img {
-	content:url("https://img.icons8.com/fluency-systems-regular/30/checked-checkbox.png");
+	/* content:url("https://img.icons8.com/fluency-systems-regular/30/checked-checkbox.png"); */
+	content:url("./checked-checkbox.png");
 }
 
 input[type=checkbox]:hover + img {

@@ -65,16 +65,21 @@ const set_bg_image = async (url) => {
 	document.body.style.backgroundImage = `url("${url}")`;
 }
 
+const disable_bg_image = () => {
+	document.body.style.backgroundImage = ``;
+}
+
 
 // sync load
 
 // default settings
 let clock_update_seconds = 10;
 let image_url = "https://picsum.photos/2048";
-let random_image_url = true;
+let use_single_color = false;
 
 const CLOCK_INTERVAL = "CLOCK_INTERVAL";
 const IMAGE_URL = "IMAGE_URL";
+const USE_SINGLE_COLOR = "USE_SINGLE_COLOR";
 
 const CHECKBOX_CHECKED = "https://img.icons8.com/ios-glyphs/30/checked-checkbox.png";
 const CHECKBOX_UNCHECKED = "https://img.icons8.com/fluency-systems-regular/48/unchecked-checkbox.png";
@@ -117,7 +122,19 @@ image_url_input.addEventListener('input', () => {
 
 	set_bg_image(image_url);
 	console.log("New image url: ", image_url, settings_data);
-})
+});
+
+let single_color_checkbox = document.getElementById("single-color-checkbox");
+single_color_checkbox.onchange = () => {
+	let on = single_color_checkbox.checked;
+
+	if (on) disable_bg_image();
+	else set_bg_image(image_url);
+
+	settings_data[USE_SINGLE_COLOR] = on;
+	use_single_color = on;
+	save_data("settings", settings_data);
+}
 
 
 let settings_menu = document.getElementsByClassName("settings-menu")[0];
@@ -148,6 +165,9 @@ const init = async () => {
 	image_url = settings_data[IMAGE_URL] ?? image_url;
 	image_url_input.value = image_url;
 	set_bg_image(image_url);
+
+	use_single_color = settings_data[USE_SINGLE_COLOR] ?? use_single_color;
+	single_color_checkbox.value = use_single_color;
 
 
 	let version_field = document.getElementById("version");
