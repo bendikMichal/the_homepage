@@ -88,6 +88,14 @@ body {
 	text-shadow: 0 0 8px var(--search-bg);
 }
 
+.date {
+	display: none;
+	margin-top: 0;
+	user-select: none;
+	color: var(--title-text);
+	text-shadow: 0 0 8px var(--search-bg);
+}
+
 .searchbar-wrap {
 	display: inherit;
 	flex-direction: column;

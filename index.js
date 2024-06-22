@@ -34,6 +34,25 @@ const find = () => {
 const set_clock = () => {
 	const str = formatter.format(new Date());
 	clock.textContent = str;
+
+	// change date too
+	const cd = (new Date()).toDateString();
+	if (cd !== date_display.textContent) {
+		date_display.textContent = cd;
+	}
+}
+
+const set_time_format = () => {
+	formatter = new Intl.DateTimeFormat(time_format, { hour: '2-digit', minute: '2-digit', second: display_seconds ? "2-digit" : undefined });
+	set_clock();
+}
+
+const get_time_format = (f24) => {
+	return f24 ? "UTC" : "en-US";
+}
+
+const handle_date_display = () => {
+	date_display.style.display = display_date ? "inherit" : "none";
 }
 
 let settings_open = false;
@@ -110,11 +129,17 @@ let clock_update_seconds = 10;
 let image_url = "https://picsum.photos/2048";
 let use_single_color = false;
 let bg_color = "#000";
+let time_format = "en-US"; // UTC for 24h
+let display_seconds = false;
+let display_date = false;
 
 const CLOCK_INTERVAL = "CLOCK_INTERVAL";
 const IMAGE_URL = "IMAGE_URL";
 const USE_SINGLE_COLOR = "USE_SINGLE_COLOR";
 const BG_COLOR = "BG_COLOR";
+const TIME_FORMAT24 = "TIME_FORMAT24";
+const DISPLAY_SECONDS = "DISPLAY_SECONDS";
+const DISPLAY_DATE = "DISPLAY_DATE";
 
 const CHECKBOX_CHECKED = "https://img.icons8.com/ios-glyphs/30/checked-checkbox.png";
 const CHECKBOX_UNCHECKED = "https://img.icons8.com/fluency-systems-regular/48/unchecked-checkbox.png";
@@ -184,6 +209,38 @@ colorpicker_input.addEventListener('input', () => {
 	console.log("New bg color: ", bg_color, settings_data);
 });
 
+let format24h_checkbox = document.getElementById("format24h-checkbox");
+format24h_checkbox.onchange = () => {
+	let on = format24h_checkbox.checked;
+	time_format = get_time_format(on);
+	set_time_format();
+
+	settings_data[TIME_FORMAT24] = on;
+	save_data("settings", settings_data);
+	console.log("New time format:", time_format);
+}
+
+let seconds_checkbox = document.getElementById("seconds-checkbox");
+seconds_checkbox.onchange = () => {
+	let on = seconds_checkbox.checked;
+	display_seconds = on;
+	set_time_format();
+
+	settings_data[DISPLAY_SECONDS] = on;
+	save_data("settings", settings_data);
+}
+
+let date_checkbox = document.getElementById("date-checkbox");
+date_checkbox.onchange = () => {
+	let on = date_checkbox.checked;
+	display_date = on;
+	handle_date_display();
+
+	settings_data[DISPLAY_DATE] = on;
+	save_data("settings", settings_data);
+}
+
+
 
 let settings_menu = document.getElementsByClassName("settings-menu")[0];
 let settings_button = document.getElementsByClassName("settings")[0];
@@ -194,7 +251,9 @@ document.addEventListener('click', event => {
   if (!settings_menu.contains(event.target) && !settings_button.contains(event.target)) close_settings();
 });
 
-const formatter = new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit' });
+let date_display = document.getElementsByClassName("date")[0];
+
+let formatter = new Intl.DateTimeFormat(time_format, { hour: '2-digit', minute: '2-digit' });
 set_clock();
 
 let clock_interval = null;
@@ -202,7 +261,6 @@ let settings_data = null;
 
 // async load
 const init = async () => {
-	const manifest = await require_file("manifest.json");
 	settings_data = await load_data("settings");
 	console.log(settings_data);
 
@@ -215,7 +273,18 @@ const init = async () => {
 	set_bg_image(image_url);
 
 	use_single_color = settings_data[USE_SINGLE_COLOR] ?? use_single_color;
-	single_color_checkbox.value = use_single_color;
+	single_color_checkbox.checked = use_single_color;
+
+	time_format = get_time_format(settings_data[TIME_FORMAT24]);
+	format24h_checkbox.checked = settings_data[TIME_FORMAT24] ?? false;
+
+	display_seconds = settings_data[DISPLAY_SECONDS] ?? display_seconds;
+	seconds_checkbox.checked = display_seconds;
+	set_time_format(); // for both format24 and seconds
+
+	display_date = settings_data[DISPLAY_DATE] ?? display_date;
+	date_checkbox.checked = display_date;
+	handle_date_display();
 
 	bg_color = settings_data[BG_COLOR] ?? bg_color;
 	colorpicker_input.value = bg_color;
@@ -224,6 +293,8 @@ const init = async () => {
 
 
 	// setting version from manifest
+	const manifest = await require_file("manifest.json");
+
 	let version_field = document.getElementById("version");
 	version_field.textContent = manifest["version"];
 
