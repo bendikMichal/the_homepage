@@ -20,7 +20,7 @@ const load_data = async (key, default_data = {}) => {
 	return data[key] ?? default_data;
 }
 
-let to_roman = (num) => {
+const to_roman = (num) => {
 	if (num === 0) return "I";
 	if (!num || isNaN(num)) return NaN;
 
@@ -34,6 +34,7 @@ let to_roman = (num) => {
 
 			res = res + _roman[i];
 			num -= _numer[i];
+			break;
 		}
 	}
 	return res;
