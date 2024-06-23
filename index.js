@@ -20,6 +20,29 @@ const load_data = async (key, default_data = {}) => {
 	return data[key] ?? default_data;
 }
 
+let to_roman = (num) => {
+	if (!num || isNaN(num)) return NaN;
+
+	const _numer = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
+	const _roman = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"];
+	let res = "";
+
+	while (num > 0) {
+		for (let i = 0; i < _numer.length; i++) {
+			if (_numer[i] > num) continue;
+
+			res = res + _roman[i];
+			num -= _numer[i];
+		}
+	}
+	return res;
+}
+
+const time_to_romans = (str, char = ':') => {
+	let num_arr = str.split(char).map(item => parseInt(item));
+	return num_arr.map(item => `${to_roman(item)}`).join(char);
+}
+
 const is_number_key = (event) => {
 	let charCode = (event.which) ? event.which : event.keyCode;
 	return !(charCode > 31 && (charCode < 48 || charCode > 57));
@@ -32,7 +55,9 @@ const find = () => {
 }
 
 const set_clock = () => {
-	const str = formatter.format(new Date());
+	let str = formatter.format(new Date());
+	if (use_romans) str = time_to_romans(str);
+	console.log(str);
 	clock.textContent = str;
 
 	// change date too
@@ -132,6 +157,7 @@ let bg_color = "#000";
 let time_format = "en-US"; // UTC for 24h
 let display_seconds = false;
 let display_date = false;
+let use_romans = false;
 
 const CLOCK_INTERVAL = "CLOCK_INTERVAL";
 const IMAGE_URL = "IMAGE_URL";
@@ -140,6 +166,7 @@ const BG_COLOR = "BG_COLOR";
 const TIME_FORMAT24 = "TIME_FORMAT24";
 const DISPLAY_SECONDS = "DISPLAY_SECONDS";
 const DISPLAY_DATE = "DISPLAY_DATE";
+const USE_ROMANS = "USE_ROMANS";
 
 const CHECKBOX_CHECKED = "https://img.icons8.com/ios-glyphs/30/checked-checkbox.png";
 const CHECKBOX_UNCHECKED = "https://img.icons8.com/fluency-systems-regular/48/unchecked-checkbox.png";
@@ -240,6 +267,15 @@ date_checkbox.onchange = () => {
 	save_data("settings", settings_data);
 }
 
+let romans_checkbox = document.getElementById("romans-checkbox");
+romans_checkbox.onchange = () => {
+	let on = romans_checkbox.checked;
+	use_romans = on;
+
+	set_clock();
+	settings_data[USE_ROMANS] = on;
+	save_data("settings", settings_data);
+}
 
 
 let settings_menu = document.getElementsByClassName("settings-menu")[0];
@@ -274,6 +310,10 @@ const init = async () => {
 
 	use_single_color = settings_data[USE_SINGLE_COLOR] ?? use_single_color;
 	single_color_checkbox.checked = use_single_color;
+
+	// load romans before setting clock
+	use_romans = settings_data[USE_ROMANS] ?? use_romans;
+	romans_checkbox.checked = use_romans;
 
 	time_format = get_time_format(settings_data[TIME_FORMAT24]);
 	format24h_checkbox.checked = settings_data[TIME_FORMAT24] ?? false;
