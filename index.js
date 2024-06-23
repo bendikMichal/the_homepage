@@ -21,6 +21,7 @@ const load_data = async (key, default_data = {}) => {
 }
 
 let to_roman = (num) => {
+	if (num === 0) return "I";
 	if (!num || isNaN(num)) return NaN;
 
 	const _numer = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
@@ -56,8 +57,14 @@ const find = () => {
 
 const set_clock = () => {
 	let str = formatter.format(new Date());
+	let part = "";
+	const f24 = time_format === "UTC";
+
+
+	if (!f24) [ str, part ] = str.split(" ");
 	if (use_romans) str = time_to_romans(str);
-	console.log(str);
+	if (!f24) str = `${str} ${part}`;
+
 	clock.textContent = str;
 
 	// change date too
