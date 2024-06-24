@@ -101,12 +101,18 @@ const close_settings = () => {
 }
 
 const set_bg_image = async (url) => {
+	// checking twice cuz it takes time to load and it is not awaited in init, to speed up load times
+	console.log(use_single_color);
+	if (use_single_color) return;
+
 	let res = null;
 	try {
 		res = await fetch(url);
 	} catch {
 
 	}
+
+	if (use_single_color) return;
 
 	let href = document.getElementById("image-url-download");
 	if (res && res.url) {
@@ -223,11 +229,11 @@ let single_color_checkbox = document.getElementById("single-color-checkbox");
 single_color_checkbox.onchange = () => {
 	let on = single_color_checkbox.checked;
 
+	use_single_color = on;
 	if (on) disable_bg_image();
 	else set_bg_image(image_url);
 
 	settings_data[USE_SINGLE_COLOR] = on;
-	use_single_color = on;
 	save_data("settings", settings_data);
 }
 
@@ -318,6 +324,7 @@ const init = async () => {
 
 	use_single_color = settings_data[USE_SINGLE_COLOR] ?? use_single_color;
 	single_color_checkbox.checked = use_single_color;
+	if (use_single_color) disable_bg_image();
 
 	// load romans before setting clock
 	use_romans = settings_data[USE_ROMANS] ?? use_romans;
