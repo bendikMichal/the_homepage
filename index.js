@@ -59,12 +59,12 @@ const find = () => {
 const set_clock = () => {
 	let str = formatter.format(new Date());
 	let part = "";
-	const f24 = time_format === "UTC";
-
+	const f24 = settings_data[TIME_FORMAT24] ?? false;
 
 	if (!f24) [ str, part ] = str.split(" ");
 	if (use_romans) str = time_to_romans(str);
 	if (!f24) str = `${str} ${part}`;
+	// if (!f24 && part) str = `${str} ${part}`;
 
 	clock.textContent = str;
 
@@ -76,7 +76,8 @@ const set_clock = () => {
 }
 
 const set_time_format = () => {
-	formatter = new Intl.DateTimeFormat(time_format, { hour: '2-digit', minute: '2-digit', second: display_seconds ? "2-digit" : undefined });
+	const f24 = settings_data[TIME_FORMAT24] ?? false;
+	formatter = new Intl.DateTimeFormat(time_format, { hour12: !f24, hour: '2-digit', minute: '2-digit', second: display_seconds ? "2-digit" : undefined });
 	set_clock();
 }
 
@@ -230,10 +231,10 @@ single_color_checkbox.onchange = () => {
 	let on = single_color_checkbox.checked;
 
 	use_single_color = on;
+	settings_data[USE_SINGLE_COLOR] = on;
 	if (on) disable_bg_image();
 	else set_bg_image(image_url);
 
-	settings_data[USE_SINGLE_COLOR] = on;
 	save_data("settings", settings_data);
 }
 
@@ -254,9 +255,9 @@ let format24h_checkbox = document.getElementById("format24h-checkbox");
 format24h_checkbox.onchange = () => {
 	let on = format24h_checkbox.checked;
 	time_format = get_time_format(on);
+	settings_data[TIME_FORMAT24] = on;
 	set_time_format();
 
-	settings_data[TIME_FORMAT24] = on;
 	save_data("settings", settings_data);
 	console.log("New time format:", time_format);
 }
@@ -265,9 +266,9 @@ let seconds_checkbox = document.getElementById("seconds-checkbox");
 seconds_checkbox.onchange = () => {
 	let on = seconds_checkbox.checked;
 	display_seconds = on;
+	settings_data[DISPLAY_SECONDS] = on;
 	set_time_format();
 
-	settings_data[DISPLAY_SECONDS] = on;
 	save_data("settings", settings_data);
 }
 
@@ -304,7 +305,6 @@ document.addEventListener('click', event => {
 let date_display = document.getElementsByClassName("date")[0];
 
 let formatter = new Intl.DateTimeFormat(time_format, { hour: '2-digit', minute: '2-digit' });
-set_clock();
 
 let clock_interval = null;
 let settings_data = null;
