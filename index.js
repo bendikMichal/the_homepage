@@ -20,8 +20,10 @@ const load_data = async (key, default_data = {}) => {
 	return data[key] ?? default_data;
 }
 
+const is_valid_number = (str) => +str === parseInt(str) || +str == parseFloat(str);
+
 const to_roman = (num) => {
-	if (num === 0) return "I";
+	if (num === 0) return null;
 	if (!num || isNaN(num)) return NaN;
 
 	const _numer = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
@@ -42,7 +44,9 @@ const to_roman = (num) => {
 
 const time_to_romans = (str, char = ':') => {
 	let num_arr = str.split(char).map(item => parseInt(item));
-	return num_arr.map(item => `${to_roman(item)}`).join(char);
+	const f24 = settings_data[TIME_FORMAT24] ?? false;
+	const times = [f24 ? 24 : 12, 60, 60];
+	return num_arr.map((item, index) => `${to_roman(item) ?? to_roman(times[index])}`).join(char);
 }
 
 const is_number_key = (event) => {
@@ -50,10 +54,11 @@ const is_number_key = (event) => {
 	return !(charCode > 31 && (charCode < 48 || charCode > 57));
 }
 
-const find = () => {
-	console.log(searchbar);
+const find = async () => {
 	let search_value = searchbar.value;
-	window.location.href = `https://duckduckgo.com/?q=${encodeURI(search_value)}`;
+	// window.location.href = `https://duckduckgo.com/?q=${encodeURI(search_value)}`;
+	// console.log(await browser.search.get(), browser.search);
+	browser.search.query({ text: search_value, disposition: browser.search.Disposition.CURRENT_TAB });
 }
 
 const set_clock = () => {
@@ -161,6 +166,11 @@ const handle_color_pickers = () => {
 	}
 }
 
+const resize_searchbar_font = () => {
+	document.getElementsByClassName("searchbar")[0].style["font-size"] = `${base_font_size * search_text_size * 0.01}px`;
+	// new glass height
+	document.getElementsByClassName("glass")[0].style.height = `${document.getElementsByClassName("searchbar")[0].offsetHeight - 4}px`;
+}
 
 // sync load
 
@@ -173,6 +183,8 @@ let time_format = "en-US"; // UTC for 24h
 let display_seconds = false;
 let display_date = false;
 let use_romans = false;
+let search_text_size = 100; // in %
+const base_font_size = 13; // px
 
 const CLOCK_INTERVAL = "CLOCK_INTERVAL";
 const IMAGE_URL = "IMAGE_URL";
@@ -182,6 +194,7 @@ const TIME_FORMAT24 = "TIME_FORMAT24";
 const DISPLAY_SECONDS = "DISPLAY_SECONDS";
 const DISPLAY_DATE = "DISPLAY_DATE";
 const USE_ROMANS = "USE_ROMANS";
+const SEARCH_TEXT_SIZE = "SEARCH_TEXT_SIZE";
 
 const CHECKBOX_CHECKED = "https://img.icons8.com/ios-glyphs/30/checked-checkbox.png";
 const CHECKBOX_UNCHECKED = "https://img.icons8.com/fluency-systems-regular/48/unchecked-checkbox.png";
@@ -292,6 +305,19 @@ romans_checkbox.onchange = () => {
 	save_data("settings", settings_data);
 }
 
+let search_text_size_input = document.getElementById("search-text-size-input");
+search_text_size_input.addEventListener('input', () => {
+	let new_size = new Number(search_text_size_input.value);
+	if (!is_valid_number(new_size)) return;
+
+	new_size = +new_size;
+	search_text_size = new_size;
+	settings_data[SEARCH_TEXT_SIZE] = new_size;
+	resize_searchbar_font();
+
+	save_data("settings", settings_data);
+});
+
 
 let settings_menu = document.getElementsByClassName("settings-menu")[0];
 let settings_button = document.getElementsByClassName("settings")[0];
@@ -340,6 +366,10 @@ const init = async () => {
 	display_date = settings_data[DISPLAY_DATE] ?? display_date;
 	date_checkbox.checked = display_date;
 	handle_date_display();
+
+	search_text_size = settings_data[SEARCH_TEXT_SIZE] ?? search_text_size;
+	search_text_size_input.value = `${search_text_size}`;
+	resize_searchbar_font();
 
 	bg_color = settings_data[BG_COLOR] ?? bg_color;
 	colorpicker_input.value = bg_color;
