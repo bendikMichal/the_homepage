@@ -172,6 +172,11 @@ const resize_searchbar_font = () => {
 	document.getElementsByClassName("glass")[0].style.height = `${document.getElementsByClassName("searchbar")[0].offsetHeight - 4}px`;
 }
 
+const set_display_title = () => {
+	let title = document.getElementsByClassName("title")[0];
+	title.style.display = display_title ? "inherit" : "none";
+}
+
 // sync load
 
 // default settings
@@ -185,6 +190,7 @@ let display_date = false;
 let use_romans = false;
 let search_text_size = 100; // in %
 const base_font_size = 13; // px
+let display_title = true;
 
 const CLOCK_INTERVAL = "CLOCK_INTERVAL";
 const IMAGE_URL = "IMAGE_URL";
@@ -195,6 +201,7 @@ const DISPLAY_SECONDS = "DISPLAY_SECONDS";
 const DISPLAY_DATE = "DISPLAY_DATE";
 const USE_ROMANS = "USE_ROMANS";
 const SEARCH_TEXT_SIZE = "SEARCH_TEXT_SIZE";
+const DISPLAY_TITLE = "DISPLAY_TITLE";
 
 const CHECKBOX_CHECKED = "https://img.icons8.com/ios-glyphs/30/checked-checkbox.png";
 const CHECKBOX_UNCHECKED = "https://img.icons8.com/fluency-systems-regular/48/unchecked-checkbox.png";
@@ -299,9 +306,9 @@ let romans_checkbox = document.getElementById("romans-checkbox");
 romans_checkbox.onchange = () => {
 	let on = romans_checkbox.checked;
 	use_romans = on;
+	settings_data[USE_ROMANS] = on;
 
 	set_clock();
-	settings_data[USE_ROMANS] = on;
 	save_data("settings", settings_data);
 }
 
@@ -317,6 +324,17 @@ search_text_size_input.addEventListener('input', () => {
 
 	save_data("settings", settings_data);
 });
+
+let title_checkbox = document.getElementById("title-checkbox");
+title_checkbox.onchange = () => {
+	let on = title_checkbox.checked;
+	
+	display_title = on;
+	settings_data[DISPLAY_TITLE] = on;
+	set_display_title();
+
+	save_data("settings", settings_data);
+}
 
 
 let settings_menu = document.getElementsByClassName("settings-menu")[0];
@@ -370,6 +388,11 @@ const init = async () => {
 	search_text_size = settings_data[SEARCH_TEXT_SIZE] ?? search_text_size;
 	search_text_size_input.value = `${search_text_size}`;
 	resize_searchbar_font();
+
+	display_title = settings_data[DISPLAY_TITLE] ?? display_title;
+	title_checkbox.checked = display_title;
+	set_display_title();
+
 
 	bg_color = settings_data[BG_COLOR] ?? bg_color;
 	colorpicker_input.value = bg_color;
