@@ -23,7 +23,7 @@ const load_data = async (key, default_data = {}) => {
 const is_valid_number = (str) => +str === parseInt(str) || +str == parseFloat(str);
 
 const to_roman = (num) => {
-	if (num === 0) return null;
+	if (num === 0) return "I";
 	if (!num || isNaN(num)) return NaN;
 
 	const _numer = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
@@ -44,9 +44,7 @@ const to_roman = (num) => {
 
 const time_to_romans = (str, char = ':') => {
 	let num_arr = str.split(char).map(item => parseInt(item));
-	const f24 = settings_data[TIME_FORMAT24] ?? false;
-	const times = [f24 ? 24 : 12, 60, 60];
-	return num_arr.map((item, index) => `${to_roman(item) ?? to_roman(times[index])}`).join(char);
+	return num_arr.map(item => to_roman(item)).join(char);
 }
 
 const is_number_key = (event) => {
