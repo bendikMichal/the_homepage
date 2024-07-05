@@ -2,6 +2,8 @@
 # THE homepage
 "a beautiful home page for firefox"
 
+Available [here](https://addons.mozilla.org/en-US/firefox/addon/the-homepage/)
+
 # Setting up the extension
 - clone the repo
 ```
