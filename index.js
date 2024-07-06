@@ -42,9 +42,16 @@ const to_roman = (num) => {
 	return res;
 }
 
+const to_bin = (num) => (num ?? 0).toString(2);
+
 const time_to_romans = (str, char = ':') => {
 	let num_arr = str.split(char).map(item => parseInt(item));
 	return num_arr.map(item => to_roman(item)).join(char);
+}
+
+const time_to_binary = (str, char = ':') => {
+	let num_arr = str.split(char).map(item => parseInt(item));
+	return num_arr.map(item => to_bin(item)).join(char);
 }
 
 const is_number_key = (event) => {
@@ -65,7 +72,10 @@ const set_clock = () => {
 	const f24 = settings_data[TIME_FORMAT24] ?? false;
 
 	if (!f24) [ str, part ] = str.split(" ");
+
 	if (use_romans) str = time_to_romans(str);
+	else if (use_binary) str = time_to_binary(str);
+
 	if (!f24) str = `${str} ${part}`;
 	// if (!f24 && part) str = `${str} ${part}`;
 
@@ -186,6 +196,7 @@ let time_format = "en-US"; // UTC for 24h
 let display_seconds = false;
 let display_date = false;
 let use_romans = false;
+let use_binary = false;
 let search_text_size = 100; // in %
 const base_font_size = 13; // px
 let display_title = true;
@@ -198,6 +209,7 @@ const TIME_FORMAT24 = "TIME_FORMAT24";
 const DISPLAY_SECONDS = "DISPLAY_SECONDS";
 const DISPLAY_DATE = "DISPLAY_DATE";
 const USE_ROMANS = "USE_ROMANS";
+const USE_BINARY = "USE_BINARY";
 const SEARCH_TEXT_SIZE = "SEARCH_TEXT_SIZE";
 const DISPLAY_TITLE = "DISPLAY_TITLE";
 
@@ -301,10 +313,27 @@ date_checkbox.onchange = () => {
 }
 
 let romans_checkbox = document.getElementById("romans-checkbox");
+let binary_checkbox = document.getElementById("binary-checkbox");
+
 romans_checkbox.onchange = () => {
 	let on = romans_checkbox.checked;
 	use_romans = on;
-	settings_data[USE_ROMANS] = on;
+	use_binary = on ? false : use_binary;
+	binary_checkbox.checked = use_binary;
+	settings_data[USE_ROMANS] = use_romans;
+	settings_data[USE_BINARY] = use_binary;
+
+	set_clock();
+	save_data("settings", settings_data);
+}
+
+binary_checkbox.onchange = () => {
+	let on = binary_checkbox.checked;
+	use_binary = on;
+	use_romans = on ? false : use_romans;
+	romans_checkbox.checked = use_romans;
+	settings_data[USE_ROMANS] = use_romans;
+	settings_data[USE_BINARY] = use_binary;
 
 	set_clock();
 	save_data("settings", settings_data);
@@ -371,6 +400,9 @@ const init = async () => {
 	// load romans before setting clock
 	use_romans = settings_data[USE_ROMANS] ?? use_romans;
 	romans_checkbox.checked = use_romans;
+
+	use_binary = settings_data[USE_BINARY] ?? use_binary;
+	binary_checkbox.checked = use_binary;
 
 	time_format = get_time_format(settings_data[TIME_FORMAT24]);
 	format24h_checkbox.checked = settings_data[TIME_FORMAT24] ?? false;
