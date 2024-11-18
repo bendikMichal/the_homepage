@@ -114,28 +114,36 @@ const close_settings = () => {
 	settings_menu.style.height = settings_open ? "360px" : "0px";
 }
 
-const set_bg_image = async (url) => {
+const set_bg_image = async (url, image_file_data) => {
 	// checking twice cuz it takes time to load and it is not awaited in init, to speed up load times
 	console.log(use_single_color);
 	if (use_single_color) return;
 
-	let res = null;
-	try {
-		res = await fetch(url);
-	} catch {
+	let fin_url = "";
+	if (url) {
 
+		let res = null;
+		try {
+			res = await fetch(url);
+		} catch {
+
+		}
+
+		let href = document.getElementById("image-url-download");
+		if (res && res.url) {
+			url = res.url;
+		}
+		href.href = url;
+		fin_url = url;
+	}
+
+	else if (image_file_data) {
+		fin_url = image_file_data;
 	}
 
 	if (use_single_color) return;
-
-	let href = document.getElementById("image-url-download");
-	if (res && res.url) {
-		url = res.url;
-	}
-	href.href = url;
-
 	// document.body.style.backgroundImage = `url("${url}")`;
-	document.body.style["background-image"] = `url("${url}")`;
+	document.body.style["background-image"] = `url("${fin_url}")`;
 }
 
 const disable_bg_image = () => {
@@ -190,6 +198,7 @@ const set_display_title = () => {
 // default settings
 let clock_update_seconds = 10;
 let image_url = "https://picsum.photos/2048";
+let image_file = "";
 let use_single_color = false;
 let bg_color = "#000";
 let time_format = "en-US"; // UTC for 24h
@@ -203,6 +212,7 @@ let display_title = true;
 
 const CLOCK_INTERVAL = "CLOCK_INTERVAL";
 const IMAGE_URL = "IMAGE_URL";
+const IMAGE_B64 = "IMAGE_B64";
 const USE_SINGLE_COLOR = "USE_SINGLE_COLOR";
 const BG_COLOR = "BG_COLOR";
 const TIME_FORMAT24 = "TIME_FORMAT24";
@@ -252,8 +262,28 @@ image_url_input.addEventListener('input', () => {
 	image_url = image_url_input.value;
 	save_data("settings", settings_data);
 
-	set_bg_image(image_url);
+	set_bg_image(image_url, image_file);
 	console.log("New image url: ", image_url, settings_data);
+});
+
+let image_fileinput = document.getElementById("image-file");
+image_fileinput.addEventListener('change', event => {
+    const file = event.target.files[0];
+	if (!file) return;
+
+	const reader = new FileReader();
+
+	reader.onload = e => {
+		const file_data = e.target.result;
+		console.log("loaded file:", file_data);
+		image_file = file_data;
+		settings_data[IMAGE_B64] = file_data;
+
+		save_data("settings", settings_data);
+		set_bg_image(image_url, image_file);
+	};
+	// reader.readAsText(file);
+	reader.readAsDataURL(file);
 });
 
 let single_color_checkbox = document.getElementById("single-color-checkbox");
@@ -263,7 +293,7 @@ single_color_checkbox.onchange = () => {
 	use_single_color = on;
 	settings_data[USE_SINGLE_COLOR] = on;
 	if (on) disable_bg_image();
-	else set_bg_image(image_url);
+	else set_bg_image(image_url, image_file);
 
 	save_data("settings", settings_data);
 }
@@ -378,7 +408,7 @@ let date_display = document.getElementsByClassName("date")[0];
 let formatter = new Intl.DateTimeFormat(time_format, { hour: '2-digit', minute: '2-digit' });
 
 let clock_interval = null;
-let settings_data = null;
+let settings_data = {};
 
 // async load
 const init = async () => {
@@ -391,7 +421,9 @@ const init = async () => {
 
 	image_url = settings_data[IMAGE_URL] ?? image_url;
 	image_url_input.value = image_url;
-	set_bg_image(image_url);
+	
+	image_file = settings_data[IMAGE_B64] ?? image_file;
+	set_bg_image(image_url, image_file);
 
 	use_single_color = settings_data[USE_SINGLE_COLOR] ?? use_single_color;
 	single_color_checkbox.checked = use_single_color;
