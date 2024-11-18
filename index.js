@@ -138,7 +138,10 @@ const set_bg_image = async (url, image_file_data) => {
 	}
 
 	else if (image_file_data) {
-		fin_url = image_file_data;
+		let res = await fetch(image_file_data);
+		let lurl = URL.createObjectURL(await res.blob());
+		console.log("blob url from b64:", lurl);
+		fin_url = lurl;
 	}
 
 	if (use_single_color) return;
