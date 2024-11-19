@@ -12,6 +12,7 @@ const require_file = async (path) => {
 }
 
 const save_data = (key, data) => {
+	console.log("Saving data: ", data);
 	browser.storage.local.set({ [key]: data });
 }
 
@@ -285,7 +286,6 @@ image_fileinput.addEventListener('change', event => {
 		save_data("settings", settings_data);
 		set_bg_image(image_url, image_file);
 	};
-	// reader.readAsText(file);
 	reader.readAsDataURL(file);
 });
 
@@ -416,7 +416,9 @@ let settings_data = {};
 // async load
 const init = async () => {
 	settings_data = await load_data("settings");
-	console.log(settings_data);
+	console.log("Loaded settings", settings_data);
+	save_data("settings", settings_data);
+	console.log("pre_saving");
 
 	// setting settings
 	clock_update_seconds = settings_data[CLOCK_INTERVAL] ?? clock_update_seconds;
@@ -472,6 +474,8 @@ const init = async () => {
 	version_field.textContent = manifest["version"];
 
 	clock_interval = setInterval(set_clock, clock_update_seconds * 1000);
+
+	console.log("settings after init:", settings_data);
 }
 
 init();
