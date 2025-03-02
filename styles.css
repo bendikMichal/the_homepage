@@ -2,9 +2,12 @@
 * {
 	--search-text: #dfdfdf;
 	--search-border: #4e4e4e;
-	--search-bg: #22222280;
-	--search-icon: #222222a0;
-	--search-icon-selected: #222222f0;
+	/* --search-bg: #22222280; */
+	/* --search-icon: #222222a0; */
+	/* --search-icon-selected: #222222f0; */
+	--search-bg: #222222cf;
+	--search-icon: #222;
+	--search-icon-selected: #333;
 
 	--settings-bg: #0f0f0f85;
 	--settings-sidebar-bg: #0f0f0fef;
@@ -148,11 +151,11 @@ input.settings-input {
 
 	background-color: var(--search-icon);
 	border-radius: 4px;
-	border: 1px solid transparent;
+	border: 1px solid #353535;
 	border-left: none;
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
-	backdrop-filter: blur(2px);
+	/* backdrop-filter: blur(2px); */
 }
 
 .glass:hover {

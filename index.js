@@ -115,9 +115,8 @@ const close_settings = () => {
 	settings_menu.style.height = settings_open ? "360px" : "0px";
 }
 
-const set_bg_image = async (url, image_file_data) => {
+const set_bg_image = async (url, image_file_b64) => {
 	// checking twice cuz it takes time to load and it is not awaited in init, to speed up load times
-	console.log(use_single_color);
 	if (use_single_color) return;
 
 	let fin_url = "";
@@ -138,8 +137,8 @@ const set_bg_image = async (url, image_file_data) => {
 		fin_url = url;
 	}
 
-	else if (image_file_data) {
-		let res = await fetch(image_file_data);
+	else if (image_file_b64) {
+		let res = await fetch(image_file_b64);
 		let lurl = URL.createObjectURL(await res.blob());
 		console.log("blob url from b64:", lurl);
 		fin_url = lurl;
@@ -189,7 +188,8 @@ const handle_color_pickers = () => {
 const resize_searchbar_font = () => {
 	document.getElementsByClassName("searchbar")[0].style["font-size"] = `${base_font_size * search_text_size * 0.01}px`;
 	// new glass height
-	document.getElementsByClassName("glass")[0].style.height = `${document.getElementsByClassName("searchbar")[0].offsetHeight - 4}px`;
+	// document.getElementsByClassName("glass")[0].style.height = `${document.getElementsByClassName("searchbar")[0].offsetHeight - 4}px`;
+	document.getElementsByClassName("glass")[0].style.height = `${document.getElementsByClassName("searchbar")[0].offsetHeight - 3}px`;
 }
 
 const set_display_title = () => {
@@ -281,9 +281,10 @@ image_fileinput.addEventListener('change', event => {
 		const file_data = e.target.result;
 		console.log("loaded file:", file_data);
 		image_file = file_data;
-		settings_data[IMAGE_B64] = file_data;
 
-		save_data("settings", settings_data);
+		// settings_data[IMAGE_B64] = file_data;
+		// save_data("settings", settings_data);
+		save_data(IMAGE_B64, file_data);
 		set_bg_image(image_url, image_file);
 	};
 	reader.readAsDataURL(file);
@@ -406,29 +407,30 @@ document.addEventListener('click', event => {
   if (!settings_menu.contains(event.target) && !settings_button.contains(event.target)) close_settings();
 });
 
+const check_settings_for_old_data = () => {
+	if (IMAGE_B64 in settings_data && settings_data[IMAGE_B64]) {
+		console.log("Detected saved image in old location, moving...");
+		image_file_data = settings_data[IMAGE_B64];
+		save_data(IMAGE_B64, image_file_data);
+		delete settings_data[IMAGE_B64];
+	}
+}
+
 let date_display = document.getElementsByClassName("date")[0];
 
 let formatter = new Intl.DateTimeFormat(time_format, { hour: '2-digit', minute: '2-digit' });
 
 let clock_interval = null;
 let settings_data = {};
+let image_file_data = null;
 
 // async load
 const init = async () => {
 	settings_data = await load_data("settings");
-	console.log("Loaded settings", settings_data);
-	save_data("settings", settings_data);
-	console.log("pre_saving");
 
 	// setting settings
 	clock_update_seconds = settings_data[CLOCK_INTERVAL] ?? clock_update_seconds;
 	clock_interval_input.value = `${clock_update_seconds}`;
-
-	image_url = settings_data[IMAGE_URL] ?? image_url;
-	image_url_input.value = image_url;
-	
-	image_file = settings_data[IMAGE_B64] ?? image_file;
-	set_bg_image(image_url, image_file);
 
 	use_single_color = settings_data[USE_SINGLE_COLOR] ?? use_single_color;
 	single_color_checkbox.checked = use_single_color;
@@ -465,6 +467,23 @@ const init = async () => {
 	colorpicker_input.value = bg_color;
 	document.body.style["background-color"] = bg_color;
 	handle_color_pickers();
+
+	// loading at the end as it takes time
+	image_file_data = await load_data(IMAGE_B64);
+	console.log("Loaded settings", settings_data);
+	console.log("Loaded base64 image", image_file_data);
+
+	check_settings_for_old_data()
+
+	// save_data("settings", settings_data);
+	// console.log("pre_saving");
+
+	// has to be at the end
+	image_url = settings_data[IMAGE_URL] ?? image_url;
+	image_url_input.value = image_url;
+	
+	image_file = image_file_data ?? image_file;
+	set_bg_image(image_url, image_file);
 
 
 	// setting version from manifest
