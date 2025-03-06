@@ -11,8 +11,10 @@ const require_file = async (path) => {
 	return f;	
 }
 
-const save_data = (key, data) => {
-	console.log("Saving data: ", data);
+const save_data = (key, data, from = "None") => {
+	if (!is_init) return console.log(from, "tried to save before initialized, stopped.");
+
+	console.log(from, "is saving data: ", data);
 	browser.storage.local.set({ [key]: data });
 }
 
@@ -250,7 +252,7 @@ clock_interval_input.addEventListener('input', () => {
 
 		settings_data[CLOCK_INTERVAL] = num;
 		clock_update_seconds = num;
-		save_data("settings", settings_data);
+		save_data("settings", settings_data, "clock_interval");
 
 		if (clock_interval) clearInterval(clock_interval);
 		clock_interval = setInterval(set_clock, clock_update_seconds * 1000);
@@ -264,7 +266,7 @@ image_url_input.addEventListener('input', () => {
 
 	settings_data[IMAGE_URL] = image_url_input.value;
 	image_url = image_url_input.value;
-	save_data("settings", settings_data);
+	save_data("settings", settings_data, "image_url");
 
 	set_bg_image(image_url, image_file);
 	console.log("New image url: ", image_url, settings_data);
@@ -299,7 +301,7 @@ single_color_checkbox.onchange = () => {
 	if (on) disable_bg_image();
 	else set_bg_image(image_url, image_file);
 
-	save_data("settings", settings_data);
+	save_data("settings", settings_data, "single_color_checkbox");
 }
 
 let colorpicker_input = document.getElementById("bg-colorpicker");
@@ -310,7 +312,7 @@ colorpicker_input.addEventListener('input', () => {
 	settings_data[BG_COLOR] = colorpicker_input.value;
 	bg_color = colorpicker_input.value;
 	document.body.style["background-color"] = bg_color;
-	save_data("settings", settings_data);
+	save_data("settings", settings_data, "colorpicker_input");
 
 	console.log("New bg color: ", bg_color, settings_data);
 });
@@ -322,7 +324,7 @@ format24h_checkbox.onchange = () => {
 	settings_data[TIME_FORMAT24] = on;
 	set_time_format();
 
-	save_data("settings", settings_data);
+	save_data("settings", settings_data, "24h checkbox");
 	console.log("New time format:", time_format);
 }
 
@@ -333,7 +335,7 @@ seconds_checkbox.onchange = () => {
 	settings_data[DISPLAY_SECONDS] = on;
 	set_time_format();
 
-	save_data("settings", settings_data);
+	save_data("settings", settings_data, "seconds_checkbox");
 }
 
 let date_checkbox = document.getElementById("date-checkbox");
@@ -343,7 +345,7 @@ date_checkbox.onchange = () => {
 	handle_date_display();
 
 	settings_data[DISPLAY_DATE] = on;
-	save_data("settings", settings_data);
+	save_data("settings", settings_data, "date_checkbox");
 }
 
 let romans_checkbox = document.getElementById("romans-checkbox");
@@ -358,7 +360,7 @@ romans_checkbox.onchange = () => {
 	settings_data[USE_BINARY] = use_binary;
 
 	set_clock();
-	save_data("settings", settings_data);
+	save_data("settings", settings_data, "romans_checkbox");
 }
 
 binary_checkbox.onchange = () => {
@@ -370,7 +372,7 @@ binary_checkbox.onchange = () => {
 	settings_data[USE_BINARY] = use_binary;
 
 	set_clock();
-	save_data("settings", settings_data);
+	save_data("settings", settings_data, "binary_checkbox");
 }
 
 let search_text_size_input = document.getElementById("search-text-size-input");
@@ -383,7 +385,7 @@ search_text_size_input.addEventListener('input', () => {
 	settings_data[SEARCH_TEXT_SIZE] = new_size;
 	resize_searchbar_font();
 
-	save_data("settings", settings_data);
+	save_data("settings", settings_data, "search_text_size");
 });
 
 let title_checkbox = document.getElementById("title-checkbox");
@@ -394,7 +396,7 @@ title_checkbox.onchange = () => {
 	settings_data[DISPLAY_TITLE] = on;
 	set_display_title();
 
-	save_data("settings", settings_data);
+	save_data("settings", settings_data, title_checkbox);
 }
 
 
@@ -423,6 +425,7 @@ let formatter = new Intl.DateTimeFormat(time_format, { hour: '2-digit', minute: 
 let clock_interval = null;
 let settings_data = {};
 let image_file_data = null;
+let is_init = false;
 
 // async load
 const init = async () => {
@@ -475,9 +478,6 @@ const init = async () => {
 
 	check_settings_for_old_data()
 
-	// save_data("settings", settings_data);
-	// console.log("pre_saving");
-
 	// has to be at the end
 	image_url = settings_data[IMAGE_URL] ?? image_url;
 	image_url_input.value = image_url;
@@ -495,6 +495,7 @@ const init = async () => {
 	clock_interval = setInterval(set_clock, clock_update_seconds * 1000);
 
 	console.log("settings after init:", settings_data);
+	is_init = true;
 }
 
 init();
