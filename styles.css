@@ -145,7 +145,8 @@ input.settings-input {
 	/* position: relative; */
 	/* right: 32px; */
 	z-index: 99;
-	height: calc(2.05rem - 0.5px);
+	/* height: calc(2.05rem - 0.5px); */
+	height: 100%;
 	padding-top: 0.1rem;
 	padding-left: 0.5rem;
 	padding-right: 0.5rem;
@@ -162,6 +163,11 @@ input.settings-input {
 .glass:hover {
 	cursor: pointer;
 	background-color: var(--search-icon-selected);
+}
+
+#searchbar-wrap {
+	overflow: hidden;
+	border-radius: 4px;
 }
 
 .credits {

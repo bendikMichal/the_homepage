@@ -193,7 +193,7 @@ const resize_searchbar_font = () => {
 	document.getElementsByClassName("searchbar")[0].style["font-size"] = `${base_font_size * search_text_size * 0.01}px`;
 	// new glass height
 	// document.getElementsByClassName("glass")[0].style.height = `${document.getElementsByClassName("searchbar")[0].offsetHeight - 4}px`;
-	document.getElementsByClassName("glass")[0].style.height = `${document.getElementsByClassName("searchbar")[0].offsetHeight - 3}px`;
+	// document.getElementsByClassName("glass")[0].style.height = `${base_font_size * search_text_size * 0. - 3}px`;
 }
 
 const set_display_title = () => {
