@@ -144,6 +144,8 @@ const set_bg_image = async (url, image_file_b64) => {
 		let lurl = URL.createObjectURL(await res.blob());
 		console.log("blob url from b64:", lurl);
 		fin_url = lurl;
+
+		document.getElementById("image-url-download").href = lurl;
 	}
 
 	if (use_single_color) return;
