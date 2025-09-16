@@ -15,7 +15,7 @@
 	--title-text: #efefef;
 
 
-	font-family: Courier;
+	font-family: Courier, "Courier new", monospace;
 	color: var(--search-text);
 }
 
